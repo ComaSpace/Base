@@ -1,0 +1,12 @@
+<!-- course.component.html -->
+
+<h2>Courses</h2>
+<div *ngFor="let course of courses">
+    <p>{{ course.name }}</p>
+    <!-- Display course details here -->
+</div>
+<!-- Course creation form -->
+<form (submit)="createCourse(newCourse)">
+    <!-- Form fields -->
+    <button type="submit">Create Course</button>
+</form>

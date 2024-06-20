@@ -1,0 +1,14 @@
+<h2>Groups</h2>
+<div *ngFor="let group of groups">
+    <p>{{ group.name }}</p>
+    <!-- Display group details here -->
+</div>
+<!-- Group creation form -->
+<form (submit)="createGroup(newGroup)">
+    <!-- Form fields -->
+    <label for="course">Select Course:</label>
+    <select id="course" name="course" [(ngModel)]="newGroup.courseId">
+        <option *ngFor="let course of courses" [value]="course.id">{{ course.name }}</option>
+    </select>
+    <button type="submit">Create Group</button>
+</form>

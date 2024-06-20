@@ -1,0 +1,18 @@
+<h2>Lectures</h2>
+<div *ngFor="let lecture of lectures">
+    <p>{{ lecture.name }}</p>
+    <!-- Display lecture details here -->
+</div>
+<!-- Lecture creation form -->
+<form (submit)="createLecture(newLecture)">
+    <!-- Form fields -->
+    <label for="course">Select Course:</label>
+    <select id="course" name="course" [(ngModel)]="newLecture.courseId">
+        <option *ngFor="let course of courses" [value]="course.id">{{ course.name }}</option>
+    </select>
+    <label for="group">Select Group:</label>
+    <select id="group" name="group" [(ngModel)]="newLecture.groupId">
+        <option *ngFor="let group of groups" [value]="group.id">{{ group.name }}</option>
+    </select>
+    <button type="submit">Create Lecture</button>
+</form>
