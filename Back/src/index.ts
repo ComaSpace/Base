@@ -4,6 +4,9 @@ import mysql from 'mysql2';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { RowDataPacket } from 'mysql2';
+import dotenv from 'dotenv';
+
+dotenv.config(); 
 
 const app = express();
 app.use(bodyParser.json());
@@ -51,6 +54,6 @@ app.post('/login', (req, res) => {
   });
 });
 
-app.listen(3000, () => {
-  console.log('Server running on port 3000');
+app.listen(4000, () => {
+  console.log('Server running on port 4000');
 });

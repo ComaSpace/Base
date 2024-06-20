@@ -4,14 +4,14 @@
     <!-- Display lecture details here -->
 </div>
 <!-- Lecture creation form -->
-<form (submit)="createLecture(newLecture)">
+<form (submit)="createLecture(lectures)">
     <!-- Form fields -->
     <label for="course">Select Course:</label>
-    <select id="course" name="course" [(ngModel)]="newLecture.courseId">
+    <select id="course" name="course" [(ngModel)]="lectures.courseId">
         <option *ngFor="let course of courses" [value]="course.id">{{ course.name }}</option>
     </select>
     <label for="group">Select Group:</label>
-    <select id="group" name="group" [(ngModel)]="newLecture.groupId">
+    <select id="group" name="group" [(ngModel)]="lectures.groupId">
         <option *ngFor="let group of groups" [value]="group.id">{{ group.name }}</option>
     </select>
     <button type="submit">Create Lecture</button>
