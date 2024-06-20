@@ -3,6 +3,7 @@ import bodyParser from 'body-parser';
 import mysql from 'mysql2';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import { RowDataPacket } from 'mysql2';
 
 const app = express();
 app.use(bodyParser.json());
@@ -21,7 +22,7 @@ app.post('/register', async (req, res) => {
   const hashedPassword = await bcrypt.hash(password, 10);
 
   const sql = 'INSERT INTO Vartotojai (vardas, pavarde, el_pasto_adresas, telefonas, password) VALUES (?, ?, ?, ?, ?)';
-  db.query(sql, [vardas, pavarde, el_pasto_adresas, telefonas, hashedPassword], (err, result) => {
+  db.query(sql, [vardas, pavarde, el_pasto_adresas, telefonas, hashedPassword], (err: any, result: any) => {
     if (err) throw err;
     res.status(201).send('User registered');
   });
@@ -31,15 +32,16 @@ app.post('/login', (req, res) => {
   const { el_pasto_adresas, password } = req.body;
   const sql = 'SELECT * FROM Vartotojai WHERE el_pasto_adresas = ?';
 
-  db.query(sql, [el_pasto_adresas], async (err, results) => {
+  db.query(sql, [el_pasto_adresas], async (err: any, results: RowDataPacket[]) => {
     if (err) throw err;
+
     if (results.length === 0) {
       return res.status(401).send('User not found');
     }
 
     const user = results[0];
-    const isMatch = await bcrypt.compare(password, user.password);
 
+    const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(401).send('Invalid password');
     }
