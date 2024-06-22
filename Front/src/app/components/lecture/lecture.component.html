@@ -1,9 +1,15 @@
 <h2>Lectures</h2>
 <div *ngFor="let lecture of lectures">
     <p>{{ lecture.name }}</p>
-    <!-- Display lecture details here -->
+
 </div>
-<!-- Lecture creation form -->
+
+<h2>Lecture Details</h2>
+
+<p>...</p>
+
+<a [routerLink]="['/lecture-files', lectures.id]">Manage Files</a>
+
 <form (submit)="createLecture(lectures)">
     <!-- Form fields -->
     <label for="course">Select Course:</label>

@@ -11,8 +11,8 @@ import { GroupService } from '../../services/group.service';
 })
 export class LectureComponent implements OnInit {
   lectures: any[] = [];
-  courses: any[] = []; // To store courses for dropdown select
-  groups: any[] = []; // To store groups for dropdown select
+  courses: any[] = []; 
+  groups: any[] = []; 
 
   constructor(private lectureService: LectureService, private courseService: CourseService, private groupService: GroupService) { }
 

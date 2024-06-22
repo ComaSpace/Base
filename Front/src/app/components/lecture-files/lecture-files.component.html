@@ -1,0 +1,11 @@
+<h2>Lecture Files</h2>
+
+<input type="file" (change)="onFileSelected($event)">
+
+<div *ngFor="let file of files">
+    <p>{{ file.name }}</p>
+    <button (click)="onDeleteFile(file.id)">Delete</button>
+    <button (click)="onToggleVisibility(file.id, !file.visible)">
+        {{ file.visible ? 'Hide' : 'Show' }} for Students
+    </button>
+</div>
