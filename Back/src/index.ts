@@ -1,6 +1,6 @@
 import express from 'express';
 import bodyParser from 'body-parser';
-import mysql, { Connection, RowDataPacket } from 'mysql2/promise'; // Import mysql2/promise for async/await support
+import mysql, { Connection, RowDataPacket } from 'mysql2/promise'; 
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';

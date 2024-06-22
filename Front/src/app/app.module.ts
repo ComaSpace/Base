@@ -1,8 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { FormsModule } from '@angular/forms'; 
-import { HttpClientModule } from '@angular/common/http';
-import { RouterModule, Routes } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { RouterModule, Routes } from '@angular/router'; // Ensure RouterModule is imported
 import { AppComponent } from './app.component';
 import { LoginComponent } from './components/login/login.component';
 import { GroupComponent } from './components/group/group.component';
@@ -28,8 +27,10 @@ const appRoutes: Routes = [
   imports: [
     BrowserModule,
     FormsModule,
-    HttpClientModule,
-    RouterModule.forRoot(appRoutes)
+    RouterModule.forRoot(appRoutes) // Ensure RouterModule.forRoot is correctly used here
+  ],
+  providers: [
+    // Any providers you might have
   ],
   bootstrap: [AppComponent]
 })
