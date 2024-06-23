@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
-import { AppComponent } from './app.component';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'; 
 import { LoginComponent } from './components/login/login.component';
 import { GroupComponent } from './components/group/group.component';
 import { CourseComponent } from './components/course/course.component';
@@ -13,13 +13,11 @@ const appRoutes: Routes = [
   { path: 'groups', component: GroupComponent },
   { path: 'lectures', component: LectureComponent },
   { path: 'login', component: LoginComponent },
-  { path: '', redirectTo: '/login', pathMatch: 'full' },
-  { path: '**', redirectTo: '/login' } 
+  { path: 'register', loadChildren: () => import('./components/register/register.component').then(m => m.RegisterComponent) },
 ];
 
 @NgModule({
   declarations: [
-    AppComponent,
     LoginComponent,
     GroupComponent,
     CourseComponent,
@@ -28,9 +26,10 @@ const appRoutes: Routes = [
   imports: [
     BrowserModule,
     FormsModule,
-    RouterModule.forRoot(appRoutes) 
+    RouterModule.forRoot(appRoutes)
   ],
-  providers: [],
-  bootstrap: [AppComponent]
+  providers: [
+    provideHttpClient(withInterceptorsFromDi())
+  ]
 })
 export class AppModule { }

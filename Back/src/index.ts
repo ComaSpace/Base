@@ -1,4 +1,4 @@
-import express, { Request, Response } from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import bodyParser from 'body-parser';
 import mysql, { Connection, RowDataPacket } from 'mysql2/promise';
 import bcrypt from 'bcryptjs';
@@ -8,10 +8,19 @@ import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
 
+
 dotenv.config();
 
 const app = express();
 app.use(bodyParser.json());
+
+app.use((req: Request, res: Response, next: NextFunction) => {
+  res.setHeader('Access-Control-Allow-Origin', '*'); // Allow all origins
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE'); // Allow only specific methods
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization'); // Allow only specific headers
+  next();
+});
+
 
 const dbConfig = {
   host: 'localhost',
@@ -33,7 +42,7 @@ const connectDB = async (): Promise<Connection> => {
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, 'uploads/'); 
+    cb(null, 'uploads/');
   },
   filename: function (req, file, cb) {
     cb(null, file.originalname); // File name
@@ -42,10 +51,14 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-const authenticateToken = (req: Request, res: Response, next: Function) => {
+interface CustomRequest extends Request {
+  user?: any;  // Extend the Request interface to include user property
+}
+
+const authenticateToken = (req: CustomRequest, res: Response, next: NextFunction) => {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
-  
+
   if (!token) {
     return res.sendStatus(401);
   }
@@ -60,16 +73,19 @@ const authenticateToken = (req: Request, res: Response, next: Function) => {
 };
 
 // Endpoint to upload files
-app.post('/api/files/upload', authenticateToken, upload.single('file'), async (req: Request, res: Response) => {
+app.post('/api/files/upload', authenticateToken, upload.single('file'), async (req: CustomRequest, res: Response) => {
   const lectureId = req.body.lectureId;
+  if (!req.file) {
+    return res.status(400).send('No file uploaded');
+  }
   const fileName = req.file.filename;
-  const filePath = req.file.path; 
+  const filePath = req.file.path;
 
   try {
     const connection = await connectDB();
     const sql = 'INSERT INTO Failai (paskaita_id, pavadinimas, failas) VALUES (?, ?, ?)';
     await connection.execute(sql, [lectureId, fileName, filePath]);
-    connection.end(); 
+    connection.end();
     res.status(201).send('File uploaded successfully');
   } catch (error) {
     console.error('Error uploading file:', error);
@@ -78,7 +94,7 @@ app.post('/api/files/upload', authenticateToken, upload.single('file'), async (r
 });
 
 // Endpoint to delete files
-app.delete('/api/files/delete/:fileId', authenticateToken, async (req: Request, res: Response) => {
+app.delete('/api/files/delete/:fileId', authenticateToken, async (req: CustomRequest, res: Response) => {
   const fileId = req.params.fileId;
 
   try {
@@ -90,11 +106,11 @@ app.delete('/api/files/delete/:fileId', authenticateToken, async (req: Request, 
     }
 
     const filePath = fileResult[0].failas;
-    
+
     fs.unlinkSync(filePath);
 
     await connection.execute('DELETE FROM Failai WHERE id = ?', [fileId]);
-    connection.end(); 
+    connection.end();
 
     res.status(200).send('File deleted successfully');
   } catch (error) {
@@ -104,7 +120,7 @@ app.delete('/api/files/delete/:fileId', authenticateToken, async (req: Request, 
 });
 
 // Endpoint to toggle file visibility
-app.put('/api/files/toggle-visibility/:fileId', authenticateToken, async (req: Request, res: Response) => {
+app.put('/api/files/toggle-visibility/:fileId', authenticateToken, async (req: CustomRequest, res: Response) => {
   const fileId = req.params.fileId;
   const visible = req.body.visible ? 1 : 0;
 
@@ -158,4 +174,14 @@ app.post('/login', async (req: Request, res: Response) => {
     }
 
     const token = jwt.sign({ id: user.id, tipas: user.tipas }, 'yourJWTSecret', { expiresIn: '1h' });
-    res.json({ token })
+    res.json({ token });
+  } catch (error) {
+    console.error('Error logging in user:', error);
+    res.status(500).send('Error logging in user');
+  }
+});
+
+const PORT = process.env.PORT || 4000;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
