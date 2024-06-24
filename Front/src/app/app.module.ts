@@ -7,6 +7,7 @@ import { LoginComponent } from './components/login/login.component';
 import { GroupComponent } from './components/group/group.component';
 import { CourseComponent } from './components/course/course.component';
 import { LectureComponent } from './components/lecture/lecture.component';
+import { StudentComponent } from './components/student/student.component';
 
 const appRoutes: Routes = [
   { path: 'courses', component: CourseComponent },
@@ -21,7 +22,8 @@ const appRoutes: Routes = [
     LoginComponent,
     GroupComponent,
     CourseComponent,
-    LectureComponent
+    LectureComponent,
+    StudentComponent
   ],
   imports: [
     BrowserModule,

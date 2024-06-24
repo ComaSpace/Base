@@ -1,0 +1,39 @@
+<!-- src/app/components/student/student.component.html -->
+
+<div class="student-form">
+    <h2>Add New Student</h2>
+    <form (ngSubmit)="createStudent()">
+        <div>
+            <label for="firstName">First Name:</label>
+            <input type="text" id="firstName" [(ngModel)]="newStudent.firstName" name="firstName" required>
+        </div>
+        <div>
+            <label for="lastName">Last Name:</label>
+            <input type="text" id="lastName" [(ngModel)]="newStudent.lastName" name="lastName" required>
+        </div>
+        <div>
+            <label for="email">Email:</label>
+            <input type="email" id="email" [(ngModel)]="newStudent.email" name="email" required>
+        </div>
+        <div>
+            <label for="password">Password:</label>
+            <input type="password" id="password" [(ngModel)]="newStudent.password" name="password" required>
+        </div>
+        <div>
+            <label for="groups">Assign to Groups:</label>
+            <select multiple id="groups" [(ngModel)]="newStudent.groupIds" name="groups">
+                <option *ngFor="let group of groups" [value]="group.id">{{ group.name }}</option>
+            </select>
+        </div>
+        <button type="submit">Add Student</button>
+    </form>
+</div>
+
+<div class="student-list">
+    <h2>Student List</h2>
+    <ul>
+        <li *ngFor="let student of students">
+            {{ student.firstName }} {{ student.lastName }} ({{ student.email }})
+        </li>
+    </ul>
+</div>

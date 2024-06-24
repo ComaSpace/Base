@@ -8,19 +8,17 @@ import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
 
-
 dotenv.config();
 
 const app = express();
 app.use(bodyParser.json());
 
 app.use((req: Request, res: Response, next: NextFunction) => {
-  res.setHeader('Access-Control-Allow-Origin', '*'); // Allow all origins
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE'); // Allow only specific methods
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization'); // Allow only specific headers
+  res.setHeader('Access-Control-Allow-Origin', '*'); 
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE'); 
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization'); 
   next();
 });
-
 
 const dbConfig = {
   host: 'localhost',
@@ -133,6 +131,92 @@ app.put('/api/files/toggle-visibility/:fileId', authenticateToken, async (req: C
   } catch (error) {
     console.error('Error toggling file visibility:', error);
     res.status(500).send('Error toggling file visibility');
+  }
+});
+
+// Endpoint to create a new student
+app.post('/api/students', async (req: Request, res: Response) => {
+  const { vardas, pavarde, el_pasto_adresas, password, groupIds } = req.body;
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  try {
+    const connection = await connectDB();
+    const sql = 'INSERT INTO Students (vardas, pavarde, el_pasto_adresas, password) VALUES (?, ?, ?, ?)';
+    const [result] = await connection.execute<any>(sql, [vardas, pavarde, el_pasto_adresas, hashedPassword]);
+
+    const insertId = result.insertId; // Retrieve the ID of the newly created student
+
+    // Inserting records into StudentGroups table to assign the student to groups
+    if (groupIds && groupIds.length > 0) {
+      const insertPromises = groupIds.map((groupId: string) => {
+        const sql = 'INSERT INTO StudentGroups (studentId, groupId) VALUES (?, ?)';
+        return connection.execute(sql, [insertId, groupId]);
+      });
+
+      await Promise.all(insertPromises);
+    }
+
+    connection.end();
+    res.status(201).send('Student created successfully');
+  } catch (error) {
+    console.error('Error creating student:', error);
+    res.status(500).send('Error creating student');
+  }
+});
+
+
+// Endpoint to update a student's details
+app.put('/api/students/:id', async (req: Request, res: Response) => {
+  const studentId = req.params.id;
+  const { vardas, pavarde, el_pasto_adresas, password, groupIds } = req.body; // Adjust fields as per your requirement
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  try {
+    const connection = await connectDB();
+    const updateSql = 'UPDATE Students SET vardas = ?, pavarde = ?, el_pasto_adresas = ?, password = ? WHERE id = ?';
+    await connection.execute(updateSql, [vardas, pavarde, el_pasto_adresas, hashedPassword, studentId]);
+
+    // Update StudentGroups table to update group assignments
+    if (groupIds && groupIds.length > 0) {
+      // First, delete existing associations
+      const deleteSql = 'DELETE FROM StudentGroups WHERE studentId = ?';
+      await connection.execute(deleteSql, [studentId]);
+
+      // Then, insert new associations
+      const insertPromises = groupIds.map((groupId: any) => {
+        const sql = 'INSERT INTO StudentGroups (studentId, groupId) VALUES (?, ?)';
+        return connection.execute(sql, [studentId, groupId]);
+      });
+
+      await Promise.all(insertPromises);
+    }
+
+    connection.end();
+    res.status(200).send('Student updated successfully');
+  } catch (error) {
+    console.error('Error updating student:', error);
+    res.status(500).send('Error updating student');
+  }
+});
+
+// Endpoint to delete a student
+app.delete('/api/students/:id', async (req: Request, res: Response) => {
+  const studentId = req.params.id;
+
+  try {
+    const connection = await connectDB();
+    const deleteSql = 'DELETE FROM Students WHERE id = ?';
+    await connection.execute(deleteSql, [studentId]);
+
+    // Optionally, delete associations in StudentGroups table
+    const deleteGroupSql = 'DELETE FROM StudentGroups WHERE studentId = ?';
+    await connection.execute(deleteGroupSql, [studentId]);
+
+    connection.end();
+    res.status(200).send('Student deleted successfully');
+  } catch (error) {
+    console.error('Error deleting student:', error);
+    res.status(500).send('Error deleting student');
   }
 });
 
