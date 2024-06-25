@@ -7,7 +7,8 @@ import { LoginComponent } from './components/login/login.component';
 import { GroupComponent } from './components/group/group.component';
 import { CourseComponent } from './components/course/course.component';
 import { LectureComponent } from './components/lecture/lecture.component';
-import { StudentComponent } from './components/student/student.component';
+import { StudentDashboardComponent } from './components/dashboard/student-dashboard/student-dashboard.component'; 
+import { TeacherDashboardComponent } from './components/dashboard/teacher-dashboard/teacher-dashboard.component';
 
 const appRoutes: Routes = [
   { path: 'courses', component: CourseComponent },
@@ -23,7 +24,8 @@ const appRoutes: Routes = [
     GroupComponent,
     CourseComponent,
     LectureComponent,
-    StudentComponent
+    StudentDashboardComponent,
+    TeacherDashboardComponent
   ],
   imports: [
     BrowserModule,

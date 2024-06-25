@@ -1,0 +1,15 @@
+<div class="container">
+    <div *ngFor="let group of groups">
+        <h3>{{ group.name }}</h3>
+        <ul>
+            <li *ngFor="let lecture of group.lectures">
+                <h4>{{ lecture.title }}</h4>
+                <ul>
+                    <li *ngFor="let file of lecture.files">
+                        <a href="{{ file.filePath }}" target="_blank">{{ file.name }}</a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+</div>

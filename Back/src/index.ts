@@ -220,48 +220,25 @@ app.delete('/api/students/:id', async (req: Request, res: Response) => {
   }
 });
 
-// Register endpoint
-app.post('/register', async (req: Request, res: Response) => {
-  const { vardas, pavarde, el_pasto_adresas, telefonas, password } = req.body;
-  const hashedPassword = await bcrypt.hash(password, 10);
+// Endpoint to fetch groups for a student
+app.get('/api/student/groups', authenticateToken, async (req: CustomRequest, res: Response) => {
+  const studentId = req.user.id; // Assuming user object contains student's ID
 
   try {
     const connection = await connectDB();
-    const sql = 'INSERT INTO Vartotojai (vardas, pavarde, el_pasto_adresas, telefonas, password) VALUES (?, ?, ?, ?, ?)';
-    await connection.execute(sql, [vardas, pavarde, el_pasto_adresas, telefonas, hashedPassword]);
-    connection.end(); // Close the connection
-    res.status(201).send('User registered');
+    const sql = `
+      SELECT g.id, g.groupName  -- Adjust columns as per your database schema
+      FROM Groups g
+      JOIN StudentGroups sg ON g.id = sg.groupId
+      WHERE sg.studentId = ?
+    `;
+    const [groups] = await connection.execute<RowDataPacket[]>(sql, [studentId]);
+
+    connection.end();
+    res.status(200).json(groups);
   } catch (error) {
-    console.error('Error registering user:', error);
-    res.status(500).send('Error registering user');
-  }
-});
-
-// Login endpoint
-app.post('/login', async (req: Request, res: Response) => {
-  const { el_pasto_adresas, password } = req.body;
-  const sql = 'SELECT * FROM Vartotojai WHERE el_pasto_adresas = ?';
-
-  try {
-    const connection = await connectDB();
-    const [results] = await connection.execute<RowDataPacket[]>(sql, [el_pasto_adresas]);
-
-    if (!Array.isArray(results) || results.length === 0) {
-      return res.status(401).send('User not found');
-    }
-
-    const user = results[0];
-    const isMatch = await bcrypt.compare(password, user.password);
-
-    if (!isMatch) {
-      return res.status(401).send('Invalid password');
-    }
-
-    const token = jwt.sign({ id: user.id, tipas: user.tipas }, 'yourJWTSecret', { expiresIn: '1h' });
-    res.json({ token });
-  } catch (error) {
-    console.error('Error logging in user:', error);
-    res.status(500).send('Error logging in user');
+    console.error('Error fetching student groups:', error);
+    res.status(500).send('Error fetching student groups');
   }
 });
 
@@ -269,3 +246,4 @@ const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+

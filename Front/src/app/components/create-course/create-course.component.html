@@ -1,0 +1,8 @@
+<div class="container">
+    <h2>Create Course</h2>
+    <form [formGroup]="createCourseForm" (ngSubmit)="createCourse()">
+        <label for="courseName">Course Name:</label>
+        <input id="courseName" formControlName="courseName" type="text">
+        <button type="submit" [disabled]="createCourseForm.invalid">Create Course</button>
+    </form>
+</div>

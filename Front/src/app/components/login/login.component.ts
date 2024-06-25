@@ -14,13 +14,16 @@ export class LoginComponent {
 
   login() {
     this.authService.login(this.email, this.password).subscribe(
-      (      response: any) => {
-        // Handle successful login response (e.g., store token, redirect, etc.)
+      (response: any) => {
+        
         console.log('Login successful:', response);
+        localStorage.setItem('token', response.token);
+        
       },
-      (      error: any) => {
-        // Handle login error (e.g., show error message)
+      (error: any) => {
+        
         console.error('Login error:', error);
+        
       }
     );
   }
