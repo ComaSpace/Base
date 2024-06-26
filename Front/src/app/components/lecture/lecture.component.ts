@@ -1,4 +1,3 @@
-
 import { Component, OnInit } from '@angular/core';
 import { LectureService } from '../../services/lecture.service';
 import { CourseService } from '../../services/course.service';
@@ -11,10 +10,15 @@ import { GroupService } from '../../services/group.service';
 })
 export class LectureComponent implements OnInit {
   lectures: any[] = [];
-  courses: any[] = []; 
-  groups: any[] = []; 
+  courses: any[] = [];
+  groups: any[] = [];
+  newLecture: any = {}; // Object to hold the new lecture data
 
-  constructor(private lectureService: LectureService, private courseService: CourseService, private groupService: GroupService) { }
+  constructor(
+    private lectureService: LectureService,
+    private courseService: CourseService,
+    private groupService: GroupService
+  ) {}
 
   ngOnInit(): void {
     this.loadLectures();
@@ -55,11 +59,12 @@ export class LectureComponent implements OnInit {
     );
   }
 
-  createLecture(lecture: any) {
-    this.lectureService.createLecture(lecture).subscribe(
+  createLecture() {
+    this.lectureService.createLecture(this.newLecture).subscribe(
       () => {
         console.log('Lecture created successfully');
         this.loadLectures();
+        this.newLecture = {}; // Reset the form after creation
       },
       (error) => {
         console.error('Error creating lecture:', error);

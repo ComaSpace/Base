@@ -9,6 +9,8 @@ import { CourseComponent } from './components/course/course.component';
 import { LectureComponent } from './components/lecture/lecture.component';
 import { StudentDashboardComponent } from './components/dashboard/student-dashboard/student-dashboard.component'; 
 import { TeacherDashboardComponent } from './components/dashboard/teacher-dashboard/teacher-dashboard.component';
+import { ReactiveFormsModule } from '@angular/forms';
+import { StudentProfileComponent } from './components/student-profile/student-profile.component';
 
 const appRoutes: Routes = [
   { path: 'courses', component: CourseComponent },
@@ -25,12 +27,15 @@ const appRoutes: Routes = [
     CourseComponent,
     LectureComponent,
     StudentDashboardComponent,
-    TeacherDashboardComponent
+    TeacherDashboardComponent,
+    StudentProfileComponent
+    
   ],
   imports: [
     BrowserModule,
     FormsModule,
-    RouterModule.forRoot(appRoutes)
+    RouterModule.forRoot(appRoutes),
+    ReactiveFormsModule
   ],
   providers: [
     provideHttpClient(withInterceptorsFromDi())

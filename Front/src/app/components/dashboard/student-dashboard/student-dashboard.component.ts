@@ -8,6 +8,7 @@ import { StudentService } from '../../../services/student.service';
 })
 export class StudentDashboardComponent implements OnInit {
   students: any[] = [];
+groups: any;
 
   constructor(private studentService: StudentService) {}
 

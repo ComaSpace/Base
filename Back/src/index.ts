@@ -164,6 +164,41 @@ app.post('/api/students', async (req: Request, res: Response) => {
   }
 });
 
+// Endpoint to update student profile
+app.put('/api/students/profile', async (req: Request, res: Response) => {
+  const { id, vardas, pavarde, el_pasto_adresas, phone } = req.body;
+  try {
+    const connection = await connectDB();
+    // Check if the email is already used by another student
+    const [existingStudent] = await connection.execute<RowDataPacket[]>('SELECT * FROM Students WHERE el_pasto_adresas = ? AND id != ?', [el_pasto_adresas, id]);
+    if (existingStudent.length > 0) {
+      connection.end();
+      return res.status(409).send('Email already registered');
+    }
+    // Update student details
+    const updateSql = 'UPDATE Students SET vardas = ?, pavarde = ?, el_pasto_adresas = ?, phone = ? WHERE id = ?';
+    await connection.execute(updateSql, [vardas, pavarde, el_pasto_adresas, phone, id]);
+    connection.end();
+    res.status(200).send('Student profile updated successfully');
+  } catch (error) {
+    console.error('Error updating student profile:', error);
+    res.status(500).send('Error updating student profile');
+  }
+});
+
+// Endpoint to check if email exists
+app.get('/api/students/email-exists', async (req: Request, res: Response) => {
+  const { email } = req.query;
+  try {
+    const connection = await connectDB();
+    const [existingStudent] = await connection.execute<RowDataPacket[]>('SELECT * FROM Students WHERE el_pasto_adresas = ?', [email]);
+    connection.end();
+    res.status(200).json({ exists: existingStudent.length > 0 });
+  } catch (error) {
+    console.error('Error checking email existence:', error);
+    res.status(500).send('Error checking email existence');
+  }
+});
 
 // Endpoint to update a student's details
 app.put('/api/students/:id', async (req: Request, res: Response) => {
@@ -246,4 +281,3 @@ const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
-

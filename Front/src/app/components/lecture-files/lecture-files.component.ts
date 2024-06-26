@@ -1,4 +1,3 @@
-
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { FileService } from '../../file.service';
@@ -10,40 +9,53 @@ import { FileService } from '../../file.service';
 })
 export class LectureFilesComponent implements OnInit {
   lectureId: string | undefined;
-  files: any[]; 
+  files: any[] = [];
 
   constructor(private route: ActivatedRoute, private fileService: FileService) {}
 
   ngOnInit(): void {
-    this.route.params.subscribe(params => {
-      this.lectureId = params['lectureId'];
+    const id = this.route.snapshot.paramMap.get('id');
+    this.lectureId = id !== null ? id : undefined;
+
+    if (this.lectureId) {
       this.loadFiles();
-    });
+    } else {
+      console.error('Lecture ID is not defined');
+      
+    }
   }
 
   loadFiles(): void {
-    // Call service to fetch files for current lectureId
-    // Example: this.fileService.getFiles(this.lectureId).subscribe(files => this.files = files);
-  }
-
-  onFileSelected(event): void {
-    const file: File = event.target.files[0];
-    if (file) {
-      this.fileService.uploadFile(file, this.lectureId).subscribe(() => {
-        this.loadFiles();
+    if (this.lectureId) {
+      this.fileService.getFiles(this.lectureId).subscribe((data: any[]) => {
+        this.files = data;
       });
     }
   }
 
-  onDeleteFile(fileId: string): void {
-    this.fileService.deleteFile(fileId).subscribe(() => {
-      this.loadFiles();
-    });
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input && input.files && input.files.length > 0) {
+      const file: File = input.files[0];
+      if (file && this.lectureId) {
+        this.fileService.uploadFile(file, this.lectureId).subscribe(() => {
+          this.loadFiles();
+        });
+      } else {
+        console.error('Lecture ID is not defined');
+       
+      }
+    } else {
+      console.error('No file selected or input is invalid');
+      
+    }
   }
 
-  onToggleVisibility(fileId: string, visibility: boolean): void {
-    this.fileService.toggleFileVisibility(fileId, visibility).subscribe(() => {
-      this.loadFiles();
-    });
+  onDeleteFile(fileId: string): void {
+    
+  }
+
+  onToggleVisibility(fileId: string, visible: boolean): void {
+    
   }
 }

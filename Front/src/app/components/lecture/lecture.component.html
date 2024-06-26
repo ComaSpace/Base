@@ -1,23 +1,18 @@
 <h2>Lectures</h2>
 <div *ngFor="let lecture of lectures">
     <p>{{ lecture.name }}</p>
-
+    <a [routerLink]="['/lecture-files', lecture.id]">Manage Files</a> <!-- Use lecture instead of lectures -->
 </div>
 
-<h2>Lecture Details</h2>
-
-<p>...</p>
-
-<a [routerLink]="['/lecture-files', lectures.id]">Manage Files</a>
-
-<form (submit)="createLecture(lectures)">
+<h2>Create New Lecture</h2>
+<form (submit)="createLecture()">
     <!-- Form fields -->
     <label for="course">Select Course:</label>
-    <select id="course" name="course" [(ngModel)]="lectures.courseId">
+    <select id="course" name="course" [(ngModel)]="newLecture.courseId">
         <option *ngFor="let course of courses" [value]="course.id">{{ course.name }}</option>
     </select>
     <label for="group">Select Group:</label>
-    <select id="group" name="group" [(ngModel)]="lectures.groupId">
+    <select id="group" name="group" [(ngModel)]="newLecture.groupId">
         <option *ngFor="let group of groups" [value]="group.id">{{ group.name }}</option>
     </select>
     <button type="submit">Create Lecture</button>
