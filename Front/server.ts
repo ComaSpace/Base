@@ -47,7 +47,7 @@ function run(): void {
   });
 }
 
-declare const __non_webpack_require__: NodeRequire;
+
 
 if (require.main === module) {
   run();
