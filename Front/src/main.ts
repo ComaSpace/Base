@@ -1,14 +1,5 @@
-import { enableProdMode } from '@angular/core';
-import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
-import { AppModule } from './app/app.module';  // Adjust the import path based on your app structure
-import { environment } from './environments/environment';
+import { bootstrapApplication } from '@angular/platform-browser';
+import { AppComponent } from './app/app.component';
 
-if (environment.production) {
-  enableProdMode();
-  console.log('Production mode enabled');
-}
-
-console.log('Bootstrapping application...');
-platformBrowserDynamic().bootstrapModule(AppModule)
+bootstrapApplication(AppComponent)
   .catch(err => console.error(err));
-

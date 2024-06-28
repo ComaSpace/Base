@@ -2,23 +2,21 @@ import { Component, OnInit } from '@angular/core';
 import { LectureService } from '../../services/lecture.service';
 import { CourseService } from '../../services/course.service';
 import { GroupService } from '../../services/group.service';
+import { CommonModule } from '@angular/common'; // Import CommonModule for Angular directives
 
 @Component({
   selector: 'app-lecture',
   templateUrl: './lecture.component.html',
-  styleUrls: ['./lecture.component.css']
+  styleUrls: ['./lecture.component.css'],
+  providers: [CommonModule] // Ensure CommonModule is imported
 })
 export class LectureComponent implements OnInit {
   lectures: any[] = [];
   courses: any[] = [];
   groups: any[] = [];
-  newLecture: any = {}; // Object to hold the new lecture data
+  newLecture: any = {};
 
-  constructor(
-    private lectureService: LectureService,
-    private courseService: CourseService,
-    private groupService: GroupService
-  ) {}
+  constructor(private lectureService: LectureService, private courseService: CourseService, private groupService: GroupService) { }
 
   ngOnInit(): void {
     this.loadLectures();
@@ -64,7 +62,6 @@ export class LectureComponent implements OnInit {
       () => {
         console.log('Lecture created successfully');
         this.loadLectures();
-        this.newLecture = {}; // Reset the form after creation
       },
       (error) => {
         console.error('Error creating lecture:', error);

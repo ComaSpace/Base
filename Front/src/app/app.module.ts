@@ -1,15 +1,15 @@
+
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { FormsModule } from '@angular/forms';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'; 
-import { LoginComponent } from './components/login/login.component';
-import { GroupComponent } from './components/group/group.component';
 import { CourseComponent } from './components/course/course.component';
+import { GroupComponent } from './components/group/group.component';
 import { LectureComponent } from './components/lecture/lecture.component';
-import { StudentDashboardComponent } from './components/dashboard/student-dashboard/student-dashboard.component'; 
+import { LoginComponent } from './components/login/login.component';
+import { StudentDashboardComponent } from './components/dashboard/student-dashboard/student-dashboard.component';
 import { TeacherDashboardComponent } from './components/dashboard/teacher-dashboard/teacher-dashboard.component';
-import { ReactiveFormsModule } from '@angular/forms';
 import { StudentProfileComponent } from './components/student-profile/student-profile.component';
 
 const appRoutes: Routes = [
@@ -21,24 +21,23 @@ const appRoutes: Routes = [
 ];
 
 @NgModule({
-  declarations: [
-    LoginComponent,
-    GroupComponent,
+  declarations: [ 
     CourseComponent,
+    GroupComponent,
     LectureComponent,
+    LoginComponent,
     StudentDashboardComponent,
     TeacherDashboardComponent,
     StudentProfileComponent
-    
   ],
   imports: [
     BrowserModule,
     FormsModule,
-    RouterModule.forRoot(appRoutes),
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    RouterModule.forRoot(appRoutes)
   ],
   providers: [
     provideHttpClient(withInterceptorsFromDi())
-  ]
+  ],
 })
 export class AppModule { }

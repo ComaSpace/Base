@@ -1,7 +1,7 @@
 <h2>Lectures</h2>
 <div *ngFor="let lecture of lectures">
     <p>{{ lecture.name }}</p>
-    <a [routerLink]="['/lecture-files', lecture.id]">Manage Files</a> <!-- Use lecture instead of lectures -->
+    <a [routerLink]="['/lecture-files', lecture.id]">Manage Files</a>
 </div>
 
 <h2>Create New Lecture</h2>
