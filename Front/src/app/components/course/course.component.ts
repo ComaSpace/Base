@@ -8,7 +8,7 @@ import { CourseService } from '../../services/course.service';
 })
 export class CourseComponent implements OnInit {
   courses: any[] = [];
-newCourse: any;
+  newCourse: any = {}; // Initialize newCourse object
 
   constructor(private courseService: CourseService) { }
 
@@ -31,6 +31,7 @@ newCourse: any;
     this.courseService.createCourse(course).subscribe(
       () => {
         console.log('Course created successfully');
+        this.newCourse = {}; // Clear newCourse object after successful creation
         this.loadCourses();
       },
       (error) => {
